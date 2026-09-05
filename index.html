@@ -7,9 +7,47 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <Шапка застосунку>
-        <Основний вміст: блок фільтрів(кількість гравців, жанр), список карток ігор>
-        <Підвал>    
+        <header>
+            <h1>Каталог настільних ігор</h1>
+            <nav>
+                <a href="#filters">Фільтри</a>
+                <a href="#games">Ігри</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="filters">
+                <h2>Фільтри</h2>
+                <form action="#">
+                    <label for="search-input">Пошук за назвою</label>
+                    <input type="text" id="search-input" name="search" placeholder="Наприклад, Брас...">
+                </form>
+            </section>
+
+            <section id="games">
+                <h2>Ігри</h2>
+
+                <article>
+                    <h3>Каркасон</h3>
+                </article>
+                <article>
+                    <h3>Вибухові кошенята</h3>
+                </article>
+                <article>
+                    <h3>Кіклади</h3>
+                </article>
+                <article>
+                    <h3>Цитаделі</h3>
+                </article>
+                <article>
+                    <h3>Брас</h3>
+                </article>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Каталог настільних ігор. Розробниця: Sofiia.</p>
+        </footer>
         <script scr="js/app.js"></script>
     </body>
 </html>
