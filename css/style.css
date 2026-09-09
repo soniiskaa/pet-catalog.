@@ -1,22 +1,43 @@
-*, *::before, *::after{
+
+*, *::before, *::after {
     box-sizing: border-box;
 }
 
-body{
+body {
     margin: 0;
 }
 
-body{
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* =========================================
+   Крок 7. ОБҐРУНТУВАННЯ ДИЗАЙН-РІШЕННЯ
+   Вимога: "каталог, яким приємно гортати".
+   Рішення: Для заголовків (h1, h2, h3) обрано округлий, 
+   "грайливий" шрифт Nunito. Він створює неформальну, 
+   розважальну атмосферу, яка асоціюється з настільними іграми. 
+   Водночас для основного тексту та бейджів використано 
+   нейтральний Open Sans, щоб забезпечити високу читабельність 
+   дрібних деталей і не перевантажувати інтерфейс.
+   ========================================= */
+
+body {
+    font-family: 'Open Sans', sans-serif;
     font-size: 1rem;
     line-height: 1.5;
     color: #333333;
-    background-color: #f4f4f9;
+    background-color: #f4f4f9; 
 }
 
+h1, h2, h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+}
 
-header{
-    background-color: #4B0082;
+header {
+    background-color: #4B0082; 
     color: #ffffff;
     padding: 20px;
     border-bottom: 4px solid #00d2d3;
@@ -40,16 +61,19 @@ header nav {
 header nav a {
     color: #ffffff;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
     transition: color 0.2s;
 }
 
 header nav a:hover {
-    color: #feca57;
+    color: #feca57; 
 }
 
+/* =========================================
+   Стилізація main і section
+   ========================================= */
 main {
-    max-width: 900px;
+    max-width: 1200px; 
     margin: 0 auto; 
     padding: 20px;
 }
@@ -58,44 +82,65 @@ section {
     margin-bottom: 40px;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-}
-
 section h2 {
     color: #4B0082;
-    border-bottom: 2px solid #feca57;
+    border-bottom: 3px solid #feca57;
     padding-bottom: 5px;
     display: inline-block;
 }
 
+/* =========================================
+   Форма та Кнопки фільтрів (Чітка вимога)
+   ========================================= */
 #filters form {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     gap: 15px;
 }
 
 #filters input {
     border: 1px solid #00d2d3;
-    padding: 8px 12px;
+    padding: 12px;
     border-radius: 4px;
     font-family: inherit;
+    font-size: 1rem;
 }
 
-#filters input:focus {
-    outline: none;
-    border-color: #4B0082;
-    box-shadow: 0 0 5px rgba(106, 5, 114, 0.3);
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
+.filter-btn {
+    min-width: 44px;
+    min-height: 44px; 
+    background-color: #4B0082; 
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.filter-btn:hover {
+    background-color: #00d2d3;
+    color: #111111;
+}
+
+/* =========================================
+   Стилізація карток ігор (Grid)
+   ========================================= */
 #games {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; 
     gap: 25px;
 }
 
@@ -104,53 +149,66 @@ section h2 {
     margin-bottom: 10px;
 }
 
-article img {
-    width: 100%;
-    height: 250px;
-    object-fit: contain; 
-    border-radius: 4px;
-    background-color: transparent;
-}
-
 article {
     background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
+    padding: 20px;
+    border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 article:hover {
-    box-shadow: 0 10px 20px rgba(106, 5, 114, 0.2); 
-    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(106, 5, 114, 0.15); 
+    transform: translateY(-5px);
+}
+
+article img {
+    width: 100%;
+    height: 220px;
+    object-fit: contain; 
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* Бейдж кількості гравців (Акцент картки) */
+.player-badge {
+    background-color: #feca57; /* Жовтий акцент */
+    color: #333333; /* Темний текст для високого контрасту */
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: inline-block;
 }
 
 article h3 {
-    margin: 0 0 15px 0;
-    color: #333333;
+    margin: 5px 0 0 0;
+    color: #222222;
+    font-size: 1.3rem;
 }
 
-
-footer {
-    background-color: #e5e5e5;
-    color: #777777;
-    font-size: 0.875rem; 
-    padding: 20px;
-    text-align: center;
-    border-top: 1px solid #cccccc;
-}
-
+/* =========================================
+   Медіа-запити (Планшет і Десктоп)
+   ========================================= */
 @media (min-width: 600px) {
     header {
-        flex-direction: row; 
+        flex-direction: row;
         justify-content: space-between;
     }
 
     #filters form {
-        flex-direction: row; 
+        flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
+    }
+    
+    .filter-buttons {
+        margin-left: auto;
     }
 
     #games {
@@ -159,12 +217,19 @@ footer {
 }
 
 @media (min-width: 1024px) {
-    main {
-        max-width: 1200px; 
-    }
-
     #games {
-        
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
     }
+}
+
+/* =========================================
+   Стилізація footer
+   ========================================= */
+footer {
+    background-color: #e5e5e5;
+    color: #555555;
+    font-size: 0.875rem; 
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #cccccc;
 }
