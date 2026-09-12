@@ -21,79 +21,61 @@
         <main>
             <section id="filters">
                 <h2>Фільтри</h2>
-                <form action="#">
+                <form action="#", id="filter-form">
                     <label for="search-input">Пошук за назвою</label>
                     <input type="text" id="search-input" name="search" placeholder="Наприклад, Брас...">
 
-                    <div class="filter-buttons">
-                        <button type="button" class="filter-btn">Всі ігри</button>
-                        <button type="button" class="filter-btn">Стратегії</button>
-                        <button type="button" class="filter-btn">Євро</button>
-                        <button type="button" class="filter-btn">Карткові ігри</button>
-                        <button type="button" class="filter-btn">Кооперативні ігри</button>
-                        <button type="button" class="filter-btn">Партійні ігри</button>
-                    </div>
+                    <label for="player-filter">Кількість гравців:</label>
+                    <select id="player-filter">
+                        <option value="all">Будь-яка кількість</option>
+                        <option value="2">2 гравців</option>
+                        <option value="3">3 гравців</option>
+                        <option value="4">4 гравців</option>
+                        <option value="5">5 гравців</option>
+                    </select>
+
+                    <label for="genre-filter">Жанр:</label>
+                    <select id="genre-filter">
+                        <option value="all">Всі жанри</option>
+                        <option value="strategy">Стратегії</option>
+                        <option value="euro">Євро</option>
+                        <option value="cards">Карткові ігри</option>
+                        <option value="cooperat">Кооперативні ігри</option>
+                        <option value="party">Партійні ігри</option>
+                    </select>
+                </form>
+            </section>
+
+            <section id="add-game">
+                <h2>Додати гру</h2>
+                <form id="add-game-form">
+                    <label for="game-title">Назва гри:</label>
+                    <input type="text" id="game-title" required>
+
+                    <label for="game-min">Мін. гравців:</label>
+                    <input type="number" id="game-min" required min="1">
+
+                    <label for="game-max">Макс. гравців:</label>
+                    <input type="number" id="game-max" required min="1">
+
+                    <label for="game-genre">Жанр:</label>
+                    <select id="game-genre">
+                        <option value="strategy">Стратегії</option>
+                        <option value="euro">Євро</option>
+                        <option value="cards">Карткові ігри</option>
+                        <option value="cooperat">Кооперативні ігри</option>
+                        <option value="party">Партійні ігри</option>
+                    </select>
+
+                    <button type="submit" class="filter-btn">Додати</button>
+                    <p id="form-error" style="color: #e74c3c; font-weight: bold; margin-top: 10px;"></p>
                 </form>
             </section>
 
             <section id="games-list">
                 <h2>Ігри</h2>
                 <p id="games-count"></p>
-                <article>
-                    <h3>Каркассон</h3>
-                    <img src="assets/karkason.png" alt="Настільна гра Каркассон">
-                    <span class="player-badge">2-5 гравців</span>
-                </article>
-                <article>
-                    <h3>Вибухові кошенята</h3>
-                    <img src="assets/vubyhoviKoshenata.png" alt="Настілька гра Вибухові кошенята">
-                    <span class="player-badge">2-5 гравців</span>
-                </article>
-                <article>
-                    <h3>Кіклади</h3>
-                    <img src="assets/kiklady.png" alt="Настільна гра Кіклади">
-                    <span class="player-badge">2-6 гравців</span>
-                </article>
-                <article>
-                    <h3>Цитаделі</h3>
-                    <img src="assets/tsitadeli.jpg" alt="Настільна гра Цитаделі">
-                    <span class="player-badge">2-8 гравців</span>
-                </article>
-                <article>
-                    <h3>Брас</h3>
-                    <img src="assets/brass.jpg" alt="Настільна гра Брас">
-                    <span class="player-badge">2-4 гравців</span>
-                </article>
-                <article>
-                    <h3>Норсгард</h3>
-                    <img src="assets/northgard.jpg" alt="Настільна гра Норсгард">
-                    <span class="player-badge">2-5 гравців</span>
-                </article>
-                <article>
-                    <h3>Коуп</h3>
-                    <img src="assets/coup.png" alt="Настільна гра Коуп">
-                    <span class="player-badge">3-6 гравців</span>
-                </article>
-                <article>
-                    <h3>Зараження</h3>
-                    <img src="assets/zarazhenya.jpg" alt="Настільна гра Зараження">
-                    <span class="player-badge">4-12 гравців</span>
-                </article>
-                <article>
-                    <h3>Саботер</h3>
-                    <img src="assets/saboter.png" alt="Настільна гра Саботер">
-                    <span class="player-badge">3-10 гравців</span>
-                </article>
-                <article>
-                    <h3>Орифлама</h3>
-                    <img src="assets/oriflama.jpg" alt="Настільна гра Орифлама">
-                    <span class="player-badge">3-5 гравців</span>
-                </article>
-                <article>
-                    <h3>Тераформування Марса</h3>
-                    <img src="assets/teraforyvanya.jpg" alt="Настільна гра Тераформування Марса">
-                    <span class="player-badge">1-5 гравців</span>
-                </article>
+                
             </section>
         </main>
 

@@ -113,6 +113,66 @@ section h2 {
     transition: background-color 0.2s, transform 0.1s;
 }
 
+#filters form,
+#add-game form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
+}
+
+#filters input,
+#filters select,
+#add-game input,
+#add-game select {
+    border: 1px solid #00d2d3; 
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+    background-color: #ffffff;
+    color: #333333;
+    transition: all 0.2s ease;
+}
+
+#filters input:focus,
+#filters select:focus,
+#add-game input:focus,
+#add-game select:focus {
+    outline: none;
+    border-color: #4B0082; 
+    box-shadow: 0 0 5px rgba(106, 5, 114, 0.3);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Кнопки (Додати / Фільтрувати) */
+.filter-btn {
+    min-width: 44px;
+    min-height: 44px; 
+    background-color: #4B0082; 
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.filter-btn:hover {
+    background-color: #00d2d3;
+    color: #111111;
+}
+
 .filter-btn:hover {
     background-color: #00d2d3;
     color: #111111;
@@ -177,19 +237,27 @@ article h3 {
         justify-content: space-between;
     }
 
-    #filters form {
-        flex-direction: row;
+    #filters form,
+    #add-game form {
+        flex-direction: row; 
         flex-wrap: wrap;
         align-items: center;
+    }
+    
+    #filters label,
+    #add-game label {
+        font-weight: 600;
+        margin-right: -5px; 
+    }
+
+    #games-list {
+        grid-template-columns: repeat(2, 1fr); 
     }
     
     .filter-buttons {
         margin-left: auto;
     }
 
-    #games-list {
-        grid-template-columns: repeat(2, 1fr); 
-    }
 }
 
 @media (min-width: 1024px) {
