@@ -48,13 +48,21 @@ function renderGames(gamesArray) {
         img.src = game.img;
         img.alt = `Настільна гра ${game.title}`;
 
+        const pCompleted = document.createElement('p');
+        if(game.completed !== undefined){
+            pCompleted.textContent = game.completed ? "Вже зіграно" : "Ще не грали";
+            pCompleted.style.fontWeight = "bold";
+            pCompleted.style.color = game.completed ? "#27ae60" : "#c0392b";
+            pCompleted.style.margin = "0 0 10px 0";
+        }
+
         article.setAttribute('data-players', `${game.minPlayers}-${game.maxPlayers}`);
         
         if (fitsPlayers(game, 4)) {
             article.classList.add('fits');
         }
 
-        article.append(img, h3, pGenre, pPlayers);
+        article.append(img, h3, pCompleted, pGenre, pPlayers);
         listContainer.append(article);
     }
 
@@ -134,3 +142,57 @@ function applyFilters() {
 searchInput.addEventListener('input', applyFilters);
 playerSelect.addEventListener('change', applyFilters);
 genreSelect.addEventListener('change', applyFilters);
+
+const API_URL = 'https://jsonplaceholder.typicode.com/todos?userId=1';
+
+async function loadData() {
+    const loader = document.querySelector('#loading-indicator');
+    const errorElement = document.querySelector('#api-error');
+
+    if(loader){
+        loader.style.display = 'block';
+    }
+
+    if(errorElement) errorElement.style.display = 'none';
+    try {
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error(`Помилка HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Дані з АРІ:", data);
+
+        const apiGames = data.map(item =>{
+            return{
+                title: item.title,
+                completed: item.completed,
+                minPlayers: 2,
+                maxPlayers: 5,
+                genre: "party",
+                img: "assets/"
+            }
+        });
+        const combinedGames = [...boardGames, ...apiGames];
+        renderGames(combinedGames);
+
+    } catch (error) {
+        console.error("Технічні деталі помилки завантаження:", error);
+
+        if(errorElement){
+            errorElement.textContent = "Не вдалося завантажити дані! Перевірте підключення до інтернету!"
+            errorElement.style.display = 'block';
+        }
+    } finally{
+        if(loader){
+            loader.style.display = 'none';
+        }
+    }
+}
+
+const loadBtn = document.querySelector('#load-api-btn');
+if (loadBtn) {
+    loadBtn.addEventListener('click', loadData);
+}
+
