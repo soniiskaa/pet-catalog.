@@ -1,23 +1,19 @@
-
 *, *::before, *::after {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-body {
     font-family: 'Open Sans', sans-serif;
     font-size: 1rem;
     line-height: 1.5;
     color: #333333;
     background-color: #f4f4f9; 
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 h1, h2, h3 {
@@ -81,53 +77,12 @@ section h2 {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-#filters input {
-    border: 1px solid #00d2d3;
-    padding: 12px;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 1rem;
-}
-
-.filter-buttons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.filter-btn {
-    min-width: 44px;
-    min-height: 44px; 
-    background-color: #4B0082; 
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 15px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-#filters form,
-#add-game form {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    display: flex;
     flex-direction: column; 
     gap: 15px;
 }
 
 #filters input,
-#filters select,
-#add-game input,
-#add-game select {
+#filters select {
     border: 1px solid #00d2d3; 
     padding: 10px 12px;
     border-radius: 6px;
@@ -139,9 +94,7 @@ section h2 {
 }
 
 #filters input:focus,
-#filters select:focus,
-#add-game input:focus,
-#add-game select:focus {
+#filters select:focus {
     outline: none;
     border-color: #4B0082; 
     box-shadow: 0 0 5px rgba(106, 5, 114, 0.3);
@@ -153,7 +106,6 @@ section h2 {
     flex-wrap: wrap;
 }
 
-/* Кнопки (Додати / Фільтрувати) */
 .filter-btn {
     min-width: 44px;
     min-height: 44px; 
@@ -173,18 +125,13 @@ section h2 {
     color: #111111;
 }
 
-.filter-btn:hover {
-    background-color: #00d2d3;
-    color: #111111;
-}
-
 #games-list {
     display: grid;
     grid-template-columns: 1fr; 
     gap: 25px;
 }
 
-#games-list h2, #games-list p#games-count {
+#games-list h2 {
     grid-column: 1 / -1;
     margin-bottom: 10px;
 }
@@ -231,21 +178,28 @@ article h3 {
     font-size: 1.3rem;
 }
 
+footer {
+    background-color: #e5e5e5;
+    color: #555555;
+    font-size: 0.875rem; 
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #cccccc;
+}
+
 @media (min-width: 600px) {
     header {
         flex-direction: row;
         justify-content: space-between;
     }
 
-    #filters form,
-    #add-game form {
+    #filters form {
         flex-direction: row; 
         flex-wrap: wrap;
         align-items: center;
     }
     
-    #filters label,
-    #add-game label {
+    #filters label {
         font-weight: 600;
         margin-right: -5px; 
     }
@@ -257,24 +211,10 @@ article h3 {
     .filter-buttons {
         margin-left: auto;
     }
-
 }
 
 @media (min-width: 1024px) {
     #games-list {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+        grid-template-columns: repeat(4, 1fr); 
     }
-}
-
-.fits {
-    border: 3px solid #00d2d3;
-}
-
-footer {
-    background-color: #e5e5e5;
-    color: #555555;
-    font-size: 0.875rem; 
-    padding: 20px;
-    text-align: center;
-    border-top: 1px solid #cccccc;
 }

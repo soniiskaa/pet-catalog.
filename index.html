@@ -13,78 +13,22 @@
         <header>
             <h1>Каталог настільних ігор</h1>
             <nav>
-                <a href="#filters">Фільтри</a>
-                <a href="#games">Ігри</a>
+                <a href="#games-list">Ігри</a>
             </nav>
         </header>
 
         <main>
-            <section id="filters">
-                <h2>Фільтри</h2>
-                <form action="#", id="filter-form">
-                    <label for="search-input">Пошук за назвою</label>
-                    <input type="text" id="search-input" name="search" placeholder="Наприклад, Брас...">
-
-                    <label for="player-filter">Кількість гравців:</label>
-                    <select id="player-filter">
-                        <option value="all">Будь-яка кількість</option>
-                        <option value="2">2 гравців</option>
-                        <option value="3">3 гравців</option>
-                        <option value="4">4 гравців</option>
-                        <option value="5">5 гравців</option>
-                    </select>
-
-                    <label for="genre-filter">Жанр:</label>
-                    <select id="genre-filter">
-                        <option value="all">Всі жанри</option>
-                        <option value="strategy">Стратегії</option>
-                        <option value="euro">Євро</option>
-                        <option value="cards">Карткові ігри</option>
-                        <option value="cooperat">Кооперативні ігри</option>
-                        <option value="party">Партійні ігри</option>
-                    </select>
-                </form>
-            </section>
-
-            <section id="add-game">
-                <h2>Додати гру</h2>
-                <form id="add-game-form">
-                    <label for="game-title">Назва гри:</label>
-                    <input type="text" id="game-title" required>
-
-                    <label for="game-min">Мін. гравців:</label>
-                    <input type="number" id="game-min" required min="1">
-
-                    <label for="game-max">Макс. гравців:</label>
-                    <input type="number" id="game-max" required min="1">
-
-                    <label for="game-genre">Жанр:</label>
-                    <select id="game-genre">
-                        <option value="strategy">Стратегії</option>
-                        <option value="euro">Євро</option>
-                        <option value="cards">Карткові ігри</option>
-                        <option value="cooperat">Кооперативні ігри</option>
-                        <option value="party">Партійні ігри</option>
-                    </select>
-
-                    <button type="submit" class="filter-btn">Додати</button>
-                    <p id="form-error" style="color: #e74c3c; font-weight: bold; margin-top: 10px;"></p>
-                </form>
-            </section>
-            <button id="load-api-btn" class="filter-btn" style="display: block; margin: 0 auto 20px;">Оновити дані з API</button>
-            <p id="loading-indicator" style="display: none; color: #00d2d3; font-weight: bold; text-align: center; margin-bottom: 20px;"> Завантаження даних з API...</p>
-            <p id="api-error" style="display: none; color: #e74c3c; font-weight: bold; text-align: center; margin-bottom: 20px;"></p>
-
-            <section id="games-list">
-                <h2>Ігри</h2>
-                <p id="games-count"></p>
-                
-            </section>
+            <div id="react-root"></div>
         </main>
 
         <footer>
             <p>&copy; 2026 Каталог настільних ігор. Розробниця: Sofiia.</p>
         </footer>
-        <script src="js/app.js"></script>
+
+        <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+        <script type="text/babel" src="js/app.js"></script>
     </body>
 </html>
