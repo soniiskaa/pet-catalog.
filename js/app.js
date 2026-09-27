@@ -124,13 +124,13 @@ async function migrateDataIfNeeded() {
     localStorage.setItem('is_migrated_to_idb', 'true');
 }
 
-function GameCard({id, title, minPlayers, maxPlayers, genre, img, duration, owned, onGenreClick, onToggleOwned}){
+function GameCard({id, title, minPlayers, maxPlayers, genre, img, duration, owned, isGameOfTheDay, onGenreClick, onToggleOwned}){
     const genreNames = {
         strategy: "Стратегія", euro: "Євро", cards: "Карткові ігри", cooperat: "Кооперативні ігри", party: "Партійні ігри" 
     };
 
     return (
-        <article>
+        <article className={isGameOfTheDay ? "game-of-the-day" : ""}>
             <img src={img} alt={`Настільна гра ${title}`}/>
             <h3>{title}</h3>
             <p
@@ -215,6 +215,9 @@ function App(){
         return matchesSearch && matchesPlayers && matchesGenre;
     });
 
+    const today = new Date().getDate();
+    const gameOfTheDayId = games.length > 0 ? games[today % games.length].id : null;
+
     return (
         <React.Fragment>
             <section id="filters">
@@ -277,6 +280,7 @@ function App(){
                         img={game.img}
                         duration={game.duration}
                         owned={game.owned}
+                        isGameOfTheDay={game.id === gameOfTheDayId}
                         onGenreClick={handleFilterGenre} 
                         onToggleOwned={handleToggleOwned}
                     />
