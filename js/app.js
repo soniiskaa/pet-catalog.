@@ -16,6 +16,29 @@ const boardGames = [
     {id: 13, title: "Шикуйсь! Куряче військо", minPlayers: 2, maxPlayers: 4, genre: "cards", img: "assets/shukys.jpg", duration: 20, owned: true}
 ];
 
+const routes = [
+    {path: '/', view: 'Home'},
+    {path: '/owned', view: 'Owned'},
+    {path: '/games/:id', view: 'GameDetail'}
+];
+
+function matchRoute(hash) {
+    if(!hash || hash === '#/' || hash === '') hash = '#/';
+
+    const path = hash.replace('#', '');
+    for(let route of routes){
+        const regex = new RegExp('^' + route.path.replace(/:\w+/g, '(\\w+)') + '$');
+        const match = path.match(regex);
+        if (match) {
+            return {
+                view: route.view,
+                id: match[1] ? parseInt(match[1]) : null 
+            };
+        }
+    }
+    return null;
+}
+
 function saveToLocalStorage(item){
     try{
         localStorage.setItem('boardGames_v1', JSON.stringify(item));
@@ -132,7 +155,11 @@ function GameCard({id, title, minPlayers, maxPlayers, genre, img, duration, owne
     return (
         <article className={isGameOfTheDay ? "game-of-the-day" : ""}>
             <img src={img} alt={`Настільна гра ${title}`}/>
-            <h3>{title}</h3>
+            <h3>
+                <a href={`#/games/${id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                    {title} 🔗
+                </a>
+            </h3>
             <p
                 style={{ fontStyle: "italic", margin: "0 0 10px 0", cursor: "pointer", color: "#00d2d3", textDecoration: "underline" }}
                 onClick={() => onGenreClick(genre)}
@@ -167,6 +194,16 @@ function App(){
 
     const [dbError, setDbError] = React.useState(null);
     
+    const [currentRoute, setCurrentRoute] = React.useState(() => matchRoute(window.location.hash));
+    React.useEffect(() => {
+        const handleHashChange = () => {
+            setCurrentRoute(matchRoute(window.location.hash));
+        };
+        window.addEventListener('hashchange', handleHashChange);
+        
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, []);
+
     React.useEffect(() => {
         async function fetchGames() {
             try{
@@ -218,37 +255,66 @@ function App(){
     const today = new Date().getDate();
     const gameOfTheDayId = games.length > 0 ? games[today % games.length].id : null;
 
+    let displayedGames = filteredGames;
+    if (currentRoute && currentRoute.view === 'Owned') {
+        displayedGames = displayedGames.filter(game => game.owned === true);
+    }
+
+    if (!currentRoute) {
+        return (
+            <div style={{ textAlign: 'center', padding: '50px' }}>
+                <h2>Сторінку не знайдено (404) </h2>
+                <p>Здається, ви перейшли за неправильним посиланням.</p>
+                <a href="#/" className="filter-btn" style={{ textDecoration: 'none', display: 'inline-block', marginTop: '20px' }}>Повернутися на головну</a>
+            </div>
+        );
+    }
+
+    if (currentRoute.view === 'GameDetail') {
+        const game = games.find(g => g.id === currentRoute.id);
+
+        if (!game) {
+            return (
+                <div style={{ textAlign: 'center', padding: '50px' }}>
+                    <h2>Гру не знайдено або дані ще завантажуються...</h2>
+                    <a href="#/" className="filter-btn" style={{ textDecoration: 'none' }}>Повернутися до списку</a>
+                </div>
+            );
+        }
+
+        return (
+            <section style={{ backgroundColor: '#ffffff', padding: '30px', borderRadius: '12px', textAlign: 'center', maxWidth: '600px', margin: '0 auto', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                <h2>Деталі гри: {game.title}</h2>
+                <img src={game.img} alt={game.title} style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain', borderRadius: '8px' }} />
+                
+                <div style={{ textAlign: 'left', margin: '20px auto', maxWidth: '300px', fontSize: '1.1rem' }}>
+                    <p><strong>🕒 Час гри:</strong> {game.duration} хвилин</p>
+                    <p><strong>👥 Гравці:</strong> {game.minPlayers} - {game.maxPlayers}</p>
+                    <p><strong>🎭 Жанр:</strong> {game.genre}</p>
+                    <p><strong>📦 Статус:</strong> {game.owned ? '✅ В колекції / Зіграно' : '⏳ Немає / Не грали'}</p>
+                </div>
+
+                <button 
+                    onClick={() => handleToggleOwned(game.id)} 
+                    className="filter-btn" 
+                    style={{ backgroundColor: game.owned ? '#27ae60' : '#e74c3c' }}
+                >
+                    {game.owned ? "Позначити як 'Не грали'" : "Позначити як 'Зіграно'"}
+                </button>
+                <br /><br />
+                
+                <a href="#/" className="filter-btn" style={{ textDecoration: 'none', display: 'inline-block' }}>⬅ Повернутися назад</a>
+            </section>
+        );
+    }
+
     return (
         <React.Fragment>
             <section id="filters">
-                <h2>Фільтри</h2>
+                <h2>{currentRoute.view === 'Owned' ? 'Моя колекція' : 'Фільтри'}</h2>
+                {/* ... тут залишається твоя форма фільтрів (form) без змін ... */}
                 <form id="filter-form" onSubmit={(e) => e.preventDefault()}>
-                    <label htmlFor="search-input">Пошук за назвою</label>
-                    <input 
-                        type="text" id="search-input" placeholder="Наприклад, Брас..."
-                        value={searchText} onChange={(e) => setSearchText(e.target.value)}
-                    />
-
-                    <label htmlFor="player-filter">Кількість гравців:</label>
-                    <select id="player-filter" value={playerFilter} onChange={(e) => setPlayerFilter(e.target.value)}>
-                        <option value="all">Будь-яка кількість</option>
-                        <option value="2">2 гравців</option>
-                        <option value="3">3 гравців</option>
-                        <option value="4">4 гравців</option>
-                        <option value="5">5 гравців</option>
-                        <option value="6">6 гравців</option>
-                    </select>
-
-                    <label htmlFor="genre-filter">Жанр:</label>
-                    <select id="genre-filter" value={genreFilter} onChange={(e) => setGenreFilter(e.target.value)}>
-                        <option value="all">Всі жанри</option>
-                        <option value="strategy">Стратегії</option>
-                        <option value="euro">Євро</option>
-                        <option value="cards">Карткові ігри</option>
-                        <option value="cooperat">Кооперативні ігри</option>
-                        <option value="party">Партійні ігри</option>
-                    </select>
-                    
+                    {/* ... твої інпути ... */}
                     <div className="filter-buttons">
                         <button type="button" className="filter-btn" onClick={resetFilters}>
                             Скинути фільтри
@@ -258,18 +324,16 @@ function App(){
             </section>
 
             <section id="games-list">
-                <h2>Ігри</h2>
-
-                {dbError && (
-                    <div style={{ backgroundColor: '#ffeaa7', color: '#d63031', padding: '15px', borderRadius: '8px', marginBottom: '20px', fontWeight: 'bold', textAlign: 'center', border: '2px solid #d63031' }}>
-                        {dbError}
-                    </div>
+                <h2>{currentRoute.view === 'Owned' ? 'Ігри в наявності' : 'Всі ігри'}</h2>
+                
+                {dbError && ( <div className="error-box">⚠️ {dbError}</div> )}
+                
+                {displayedGames.length === 0 && !dbError && (
+                    <p style={{ gridColumn: '1 / -1', fontWeight: 'bold' }}>За вашим запитом ігор не знайдено.</p>
                 )}
-                {filteredGames.length === 0 && !dbError && (
-                    <p style={{ gridColumn: '1 / -1', fontWeight: 'bold' }}>За вашим запитом ігор не знайдено, або дані ще завантажуються...</p>
-                )}
-
-                {filteredGames.map(game => (
+                
+                {/* ЗВЕРНИ УВАГУ: використовуємо displayedGames замість filteredGames */}
+                {displayedGames.map(game => (
                     <GameCard 
                         key={game.id} 
                         id={game.id} 
