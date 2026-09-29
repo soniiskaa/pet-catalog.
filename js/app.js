@@ -196,12 +196,23 @@ function App(){
     
     const [currentRoute, setCurrentRoute] = React.useState(() => matchRoute(window.location.hash));
     React.useEffect(() => {
-        const handleHashChange = () => {
-            setCurrentRoute(matchRoute(window.location.hash));
-        };
-        window.addEventListener('hashchange', handleHashChange);
-        
-        return () => window.removeEventListener('hashchange', handleHashChange);
+        async function fetchGames(){
+            try{
+                const response = await fetch('api/games');
+
+                if(!response.ok)
+                {
+                    throw new Error(`Помилка HTTP: ${response.status}`);
+                }
+
+                const dataFromAPI = await response.json();
+                setGames(dataFromAPI);
+            } catch(error){
+                console.error("Помилка завантаження з АРІ: ", error);
+                setDbError("Не вдалося завантажити дані з сервера. Переконайтеся, що сервер запущено.");
+            }
+        }
+        fetchGames();
     }, []);
 
     React.useEffect(() => {
