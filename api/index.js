@@ -16,7 +16,8 @@ const games = [
     {id: 10, title: "Орифлама", minPlayers: 3, maxPlayers: 5, genre: "cards", img: "assets/oriflama.jpg", duration: 20, owned: true},
     {id: 11, title: "Тераформування Марса", minPlayers: 1, genre: "euro", maxPlayers: 5, img: "assets/teraforyvanya.jpg", duration: 110, owned: false},
     {id: 12, title: "Череп", minPlayers: 3, maxPlayers: 6, genre: "party", img: "assets/skull.jpg", duration: 25, owned: true},
-    {id: 13, title: "Шикуйсь! Куряче військо", minPlayers: 2, maxPlayers: 4, genre: "cards", img: "assets/shukys.jpg", duration: 20, owned: true}
+    {id: 13, title: "Шикуйсь! Куряче військо", minPlayers: 2, maxPlayers: 4, genre: "cards", img: "assets/shukys.jpg", duration: 20, owned: true},
+    {id: 14, title: "Мачі Коро", minPlayers: 2, maxPlayers: 4, genre: "cards", img: "assets/machiKoro.jpg", duration: 30, owned: true}
 ];
 
 app.use(express.static(path.join(__dirname, '../')));
