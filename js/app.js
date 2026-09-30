@@ -9,7 +9,6 @@ function matchRoute(hash) {
 
     const path = hash.replace('#', '');
     for(let route of routes){
-        // Виправлено регулярний вираз на пошук чисел (\d+)
         const regex = new RegExp('^' + route.path.replace(/:\w+/g, '(\\d+)') + '$');
         const match = path.match(regex);
         if (match) {
@@ -22,7 +21,6 @@ function matchRoute(hash) {
     return null;
 }
 
-// === IndexedDB Логіка ===
 const DB_NAME = 'BoardGamesDB'; 
 const DB_VERSION = 1;           
 const STORE_NAME = 'games';
@@ -53,7 +51,6 @@ async function addItem(item) {
 }
 const updateItem = addItem; 
 
-// === Компоненти React ===
 
 function GameCard({id, title, minPlayers, maxPlayers, genre, img, duration, owned, isGameOfTheDay, onGenreClick, onToggleOwned}){
     const genreNames = {
@@ -92,7 +89,6 @@ function App(){
     const [playersFilter, setPlayersFilter] = React.useState('');
     const [genreFilter, setGenreFilter] = React.useState('all');
 
-    // Відновлено відслідковування зміни URL (роутинг)
     React.useEffect(() => {
         const handleHashChange = () => {
             setCurrentRoute(matchRoute(window.location.hash));
@@ -101,7 +97,6 @@ function App(){
         return () => window.removeEventListener('hashchange', handleHashChange);
     }, []);
 
-    // Отримання даних з API
     React.useEffect(() => {
         async function fetchGames(){
             try {
@@ -133,7 +128,6 @@ function App(){
             game.id === id ? { ...game, owned: !game.owned } : game
         ));
 
-        // Оновлення в базі IndexedDB (фоново)
         const gameToUpdate = games.find(game => game.id === id);
         if (gameToUpdate) {
             const updatedGame = { ...gameToUpdate, owned: !gameToUpdate.owned };

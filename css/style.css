@@ -21,7 +21,6 @@ h1, h2, h3 {
     font-weight: 800;
 }
 
-/* === Шапка та Підвал === */
 header {
     background-color: #4B0082; 
     color: #ffffff;
@@ -78,7 +77,6 @@ section h2 {
     display: inline-block;
 }
 
-/* === Фільтри === */
 #filters form {
     background-color: #ffffff;
     padding: 20px;
@@ -137,7 +135,6 @@ section h2 {
     color: #111111;
 }
 
-/* === Сітка карток ігор === */
 #games-list {
     display: grid;
     grid-template-columns: 1fr; 
@@ -200,7 +197,6 @@ article h3 {
     display: inline-block;
 }
 
-/* Кнопка статусу гри */
 .status-btn {
     margin-top: auto;
     padding: 8px 15px;
@@ -216,7 +212,6 @@ article h3 {
 .status-btn.owned { background-color: #27ae60; }
 .status-btn.not-owned { background-color: #e74c3c; }
 
-/* === Детальна сторінка гри === */
 .game-detail-card {
     background-color: #ffffff;
     padding: 30px;
@@ -242,7 +237,6 @@ article h3 {
     font-size: 1.1rem;
 }
 
-/* === Сторінки помилок / Сповіщення === */
 .error-page {
     text-align: center;
     padding: 50px;
