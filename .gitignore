@@ -1,4 +1,4 @@
 .vscode/
 .DS_Store
 
-server/node_modules/
+node_modules/

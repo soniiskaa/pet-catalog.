@@ -1,21 +1,3 @@
-//Обрано React. Обґрунтування: React має зручний компонентний підхід на базі функцій (JSX) та ефективно оновлює інтерфейс за допомогою Virtual DOM.
-
-const boardGames = [
-    {id: 1, title: "Каркасон", minPlayers: 2, maxPlayers: 5, genre: "cards", img: "assets/karkason.png", duration: 35, owned: true},
-    {id: 2, title: "Вибухові кошенята", minPlayers: 2, maxPlayers: 5, genre: "cards", img: "assets/vubyhoviKoshenata.png", duration: 15, owned: true},
-    {id: 3, title: "Кіклади", minPlayers: 2, maxPlayers: 6, genre: "strategy", img: "assets/kiklady.png", duration: 90, owned: true},
-    {id: 4, title: "Цитаделі", minPlayers: 2, maxPlayers: 8, genre: "cards", img: "assets/tsitadeli.jpg", duration: 40, owned: true},
-    {id: 5, title: "Брас", minPlayers: 2, maxPlayers: 4, genre: "euro", img: "assets/brass.jpg", duration: 150, owned: true},
-    {id: 6, title: "Нортґард", minPlayers: 2, maxPlayers: 5, genre: "strategy", img: "assets/northgard.jpg", duration: 60, owned: false},
-    {id: 7, title: "Коуп", minPlayers: 3, maxPlayers: 6, genre: "party", img: "assets/coup.png", duration: 15, owned: true},
-    {id: 8, title: "Зараження", minPlayers: 4, maxPlayers: 12, genre: "cooperat", img: "assets/zarazhenya.jpg", duration: 25, owned: true},
-    {id: 9, title: "Саботер", minPlayers: 3, maxPlayers: 10, genre: "party", img: "assets/saboter.png", duration: 30, owned: true},
-    {id: 10, title: "Орифлама", minPlayers: 3, maxPlayers: 5, genre: "cards", img: "assets/oriflama.jpg", duration: 20, owned: true},
-    {id: 11, title: "Тераформування Марса", minPlayers: 1, genre: "euro", maxPlayers: 5, img: "assets/teraforyvanya.jpg", duration: 110, owned: false},
-    {id: 12, title: "Череп", minPlayers: 3, maxPlayers: 6, genre: "party", img: "assets/skull.jpg", duration: 25, owned: true},
-    {id: 13, title: "Шикуйсь! Куряче військо", minPlayers: 2, maxPlayers: 4, genre: "cards", img: "assets/shukys.jpg", duration: 20, owned: true}
-];
-
 const routes = [
     {path: '/', view: 'Home'},
     {path: '/owned', view: 'Owned'},
@@ -27,7 +9,8 @@ function matchRoute(hash) {
 
     const path = hash.replace('#', '');
     for(let route of routes){
-        const regex = new RegExp('^' + route.path.replace(/:\w+/g, '(\\w+)') + '$');
+        // Виправлено регулярний вираз на пошук чисел (\d+)
+        const regex = new RegExp('^' + route.path.replace(/:\w+/g, '(\\d+)') + '$');
         const match = path.match(regex);
         if (match) {
             return {
@@ -39,24 +22,7 @@ function matchRoute(hash) {
     return null;
 }
 
-function saveToLocalStorage(item){
-    try{
-        localStorage.setItem('boardGames_v1', JSON.stringify(item));
-    } catch(error){
-        console.error("Помилка збереження в localStorage:", error);
-    }
-}
-
-function loadFromLocalStorage(){
-    try{
-        const savedData = localStorage.getItem('boardGames_v1');
-        return savedData ? JSON.parse(savedData) : null;
-    } catch(error){
-        console.error("Помилка читання в localStorage:", error);
-        return null;
-    }
-}
-
+// === IndexedDB Логіка ===
 const DB_NAME = 'BoardGamesDB'; 
 const DB_VERSION = 1;           
 const STORE_NAME = 'games';
@@ -64,33 +30,14 @@ const STORE_NAME = 'games';
 function openDB(){
     return new Promise((resolve, reject) =>{
         const request = indexedDB.open(DB_NAME, DB_VERSION);
-
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
             if (!db.objectStoreNames.contains(STORE_NAME)) {
                 db.createObjectStore(STORE_NAME, { keyPath: 'id' });
             }
         };
-
-        request.onsuccess = (event) => {
-            resolve(event.target.result);
-        };
-
-        request.onerror = (event) => {
-            reject(event.target.error);
-        };
-    });
-}
-
-async function getAllItems() {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readonly');
-        const store = tx.objectStore(STORE_NAME);
-        const request = store.getAll();
-
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
+        request.onsuccess = (event) => resolve(event.target.result);
+        request.onerror = (event) => reject(event.target.error);
     });
 }
 
@@ -100,52 +47,13 @@ async function addItem(item) {
         const tx = db.transaction(STORE_NAME, 'readwrite');
         const store = tx.objectStore(STORE_NAME);
         const request = store.put(item); 
-
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
     });
 }
-
 const updateItem = addItem; 
 
-async function deleteItem(id) {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
-        const request = store.delete(id);
-
-        request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
-    });
-}
-
-async function migrateDataIfNeeded() {
-    const isMigrated = localStorage.getItem('is_migrated_to_idb');
-    if (isMigrated === 'true') {
-        return; 
-    }
-
-    const existingDbItems = await getAllItems();
-    
-    if (existingDbItems.length === 0) {
-        const localData = loadFromLocalStorage(); 
-        
-        if (localData && localData.length > 0) {
-            for (const game of localData) {
-                await addItem(game);
-            }
-            console.log("Міграцію з localStorage в IndexedDB успішно виконано!");
-        } else {
-            for (const game of boardGames) {
-                await addItem(game);
-            }
-            console.log("IndexedDB ініціалізовано початковим списком ігор.");
-        }
-    }
-
-    localStorage.setItem('is_migrated_to_idb', 'true');
-}
+// === Компоненти React ===
 
 function GameCard({id, title, minPlayers, maxPlayers, genre, img, duration, owned, isGameOfTheDay, onGenreClick, onToggleOwned}){
     const genreNames = {
@@ -160,28 +68,14 @@ function GameCard({id, title, minPlayers, maxPlayers, genre, img, duration, owne
                     {title} 🔗
                 </a>
             </h3>
-            <p
-                style={{ fontStyle: "italic", margin: "0 0 10px 0", cursor: "pointer", color: "#00d2d3", textDecoration: "underline" }}
-                onClick={() => onGenreClick(genre)}
-                title="Натисніть, щоб відфільтрувати за цим жанром"
-            >
+            <p className="genre-link" onClick={() => onGenreClick(genre)} title="Натисніть, щоб відфільтрувати за цим жанром">
                 Жанр: {genreNames[genre] || genre}
             </p>
             <p className="player-badge">{minPlayers}-{maxPlayers} гравців • {duration} хв</p>
             
             <button 
                 onClick={() => onToggleOwned(id)}
-                style={{
-                    marginTop: '10px',
-                    padding: '8px 15px',
-                    backgroundColor: owned ? '#27ae60' : '#e74c3c', 
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    width: '100%'
-                }}
+                className={`status-btn ${owned ? 'owned' : 'not-owned'}`}
             >
                 {owned ? "Зіграно" : "Ще не грали"}
             </button>
@@ -191,80 +85,73 @@ function GameCard({id, title, minPlayers, maxPlayers, genre, img, duration, owne
 
 function App(){
     const [games, setGames] = React.useState([]);
-
     const [dbError, setDbError] = React.useState(null);
-    
     const [currentRoute, setCurrentRoute] = React.useState(() => matchRoute(window.location.hash));
+
+    const [searchTerm, setSearchTerm] = React.useState('');
+    const [playersFilter, setPlayersFilter] = React.useState('');
+    const [genreFilter, setGenreFilter] = React.useState('all');
+
+    // Відновлено відслідковування зміни URL (роутинг)
+    React.useEffect(() => {
+        const handleHashChange = () => {
+            setCurrentRoute(matchRoute(window.location.hash));
+        };
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+    }, []);
+
+    // Отримання даних з API
     React.useEffect(() => {
         async function fetchGames(){
-            try{
-                const response = await fetch('api/games');
-
-                if(!response.ok)
-                {
-                    throw new Error(`Помилка HTTP: ${response.status}`);
-                }
-
+            try {
+                // Додано слеш спереду, щоб запит йшов від кореня
+                const response = await fetch('/api/games');
+                if(!response.ok) throw new Error(`Помилка HTTP: ${response.status}`);
+                
                 const dataFromAPI = await response.json();
                 setGames(dataFromAPI);
-            } catch(error){
+            } catch(error) {
                 console.error("Помилка завантаження з АРІ: ", error);
-                setDbError("Не вдалося завантажити дані з сервера. Переконайтеся, що сервер запущено.");
+                setDbError("Не вдалося завантажити дані з сервера.");
             }
         }
         fetchGames();
     }, []);
-
-    React.useEffect(() => {
-        async function fetchGames() {
-            try{
-            await migrateDataIfNeeded();
-            const dataFromDB = await getAllItems();
-            setGames(dataFromDB);
-            }catch(error){
-                console.error("Помилка IndexedDB:", error);
-                setDbError("Не вдалося отримати доступ до бази даних. Можливо, ви використовуєте режим інкогніто або приватного перегляду, де збереження даних заборонено.");
-            }
-        }
-        
-        fetchGames();
-    }, []);
-
-    const [searchText, setSearchText] = React.useState('');
-    const [playerFilter, setPlayerFilter] = React.useState('all');
-    const [genreFilter, setGenreFilter] = React.useState('all');
 
     const handleFilterGenre = (selectedGenre) => setGenreFilter(selectedGenre);
 
     const resetFilters = () => {
-        setSearchText('');
-        setPlayerFilter('all');
+        setSearchTerm('');
+        setPlayersFilter('');
         setGenreFilter('all');
     };
 
     const handleToggleOwned = async (id) => {
+        // Миттєве оновлення інтерфейсу (React state)
+        setGames(prevGames => prevGames.map(game => 
+            game.id === id ? { ...game, owned: !game.owned } : game
+        ));
+
+        // Оновлення в базі IndexedDB (фоново)
         const gameToUpdate = games.find(game => game.id === id);
-        if (!gameToUpdate) return;
-
-        const updatedGame = { ...gameToUpdate, owned: !gameToUpdate.owned };
-        
-        await updateItem(updatedGame);
-        
-        const freshData = await getAllItems();
-        setGames(freshData);
+        if (gameToUpdate) {
+            const updatedGame = { ...gameToUpdate, owned: !gameToUpdate.owned };
+            await updateItem(updatedGame);
+        }
     };
-
-    const filteredGames = games.filter(game => { 
-        const matchesSearch = game.title.toLowerCase().includes(searchText.toLowerCase());
-        const matchesPlayers = playerFilter === 'all' || 
-            (Number(playerFilter) >= game.minPlayers && Number(playerFilter) <= game.maxPlayers);
-        const matchesGenre = genreFilter === 'all' || game.genre === genreFilter;
-
-        return matchesSearch && matchesPlayers && matchesGenre;
-    });
 
     const today = new Date().getDate();
     const gameOfTheDayId = games.length > 0 ? games[today % games.length].id : null;
+
+    const filteredGames = games.filter(game => {
+        const matchesSearch = game.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesPlayers = playersFilter === '' || 
+            (game.minPlayers <= parseInt(playersFilter) && game.maxPlayers >= parseInt(playersFilter));
+        const matchesGenre = genreFilter === 'all' || game.genre === genreFilter;
+        
+        return matchesSearch && matchesPlayers && matchesGenre;
+    });
 
     let displayedGames = filteredGames;
     if (currentRoute && currentRoute.view === 'Owned') {
@@ -273,7 +160,7 @@ function App(){
 
     if (!currentRoute) {
         return (
-            <div style={{ textAlign: 'center', padding: '50px' }}>
+            <div className="error-page">
                 <h2>Сторінку не знайдено (404) </h2>
                 <p>Здається, ви перейшли за неправильним посиланням.</p>
                 <a href="#/" className="filter-btn" style={{ textDecoration: 'none', display: 'inline-block', marginTop: '20px' }}>Повернутися на головну</a>
@@ -286,7 +173,7 @@ function App(){
 
         if (!game) {
             return (
-                <div style={{ textAlign: 'center', padding: '50px' }}>
+                <div className="error-page">
                     <h2>Гру не знайдено або дані ще завантажуються...</h2>
                     <a href="#/" className="filter-btn" style={{ textDecoration: 'none' }}>Повернутися до списку</a>
                 </div>
@@ -294,11 +181,11 @@ function App(){
         }
 
         return (
-            <section style={{ backgroundColor: '#ffffff', padding: '30px', borderRadius: '12px', textAlign: 'center', maxWidth: '600px', margin: '0 auto', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+            <section className="game-detail-card">
                 <h2>Деталі гри: {game.title}</h2>
-                <img src={game.img} alt={game.title} style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain', borderRadius: '8px' }} />
+                <img src={game.img} alt={game.title} className="game-detail-img" />
                 
-                <div style={{ textAlign: 'left', margin: '20px auto', maxWidth: '300px', fontSize: '1.1rem' }}>
+                <div className="game-detail-info">
                     <p><strong>🕒 Час гри:</strong> {game.duration} хвилин</p>
                     <p><strong>👥 Гравці:</strong> {game.minPlayers} - {game.maxPlayers}</p>
                     <p><strong>🎭 Жанр:</strong> {game.genre}</p>
@@ -307,8 +194,7 @@ function App(){
 
                 <button 
                     onClick={() => handleToggleOwned(game.id)} 
-                    className="filter-btn" 
-                    style={{ backgroundColor: game.owned ? '#27ae60' : '#e74c3c' }}
+                    className={`status-btn ${game.owned ? 'owned' : 'not-owned'}`}
                 >
                     {game.owned ? "Позначити як 'Не грали'" : "Позначити як 'Зіграно'"}
                 </button>
@@ -323,9 +209,34 @@ function App(){
         <React.Fragment>
             <section id="filters">
                 <h2>{currentRoute.view === 'Owned' ? 'Моя колекція' : 'Фільтри'}</h2>
-                {/* ... тут залишається твоя форма фільтрів (form) без змін ... */}
-                <form id="filter-form" onSubmit={(e) => e.preventDefault()}>
-                    {/* ... твої інпути ... */}
+                <form id="filter-form" className="filter-form" onSubmit={(e) => e.preventDefault()}>
+                    <input 
+                        type="text" 
+                        className="filter-input"
+                        placeholder="Пошук за назвою..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <input 
+                        type="number" 
+                        className="filter-input"
+                        placeholder="Кількість гравців" 
+                        value={playersFilter}
+                        onChange={(e) => setPlayersFilter(e.target.value)}
+                    />
+                    <select 
+                        className="filter-select"
+                        value={genreFilter} 
+                        onChange={(e) => setGenreFilter(e.target.value)}
+                    >
+                        <option value="all">Всі жанри</option>
+                        <option value="cards">Карткові</option>
+                        <option value="strategy">Стратегії</option>
+                        <option value="euro">Євро</option>
+                        <option value="party">Партійні</option>
+                        <option value="cooperat">Кооперативні</option>
+                    </select>
+    
                     <div className="filter-buttons">
                         <button type="button" className="filter-btn" onClick={resetFilters}>
                             Скинути фільтри
@@ -343,7 +254,6 @@ function App(){
                     <p style={{ gridColumn: '1 / -1', fontWeight: 'bold' }}>За вашим запитом ігор не знайдено.</p>
                 )}
                 
-                {/* ЗВЕРНИ УВАГУ: використовуємо displayedGames замість filteredGames */}
                 {displayedGames.map(game => (
                     <GameCard 
                         key={game.id} 
@@ -368,4 +278,5 @@ function App(){
 const rootElement = document.getElementById('react-root');
 if (rootElement) {
     const root = ReactDOM.createRoot(rootElement);
-    root.render(<App />);}
+    root.render(<App />);
+}

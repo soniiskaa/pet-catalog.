@@ -21,6 +21,7 @@ h1, h2, h3 {
     font-weight: 800;
 }
 
+/* === Шапка та Підвал === */
 header {
     background-color: #4B0082; 
     color: #ffffff;
@@ -32,9 +33,7 @@ header {
     gap: 15px;
 }
 
-header h1 {
-    margin: 0;
-}
+header h1 { margin: 0; }
 
 header nav {
     display: flex;
@@ -63,15 +62,14 @@ footer {
     border-top: 1px solid #cccccc;
 }
 
+/* === Основний макет === */
 main {
     max-width: 1200px; 
     margin: 0 auto; 
     padding: 20px;
 }
 
-section {
-    margin-bottom: 40px;
-}
+section { margin-bottom: 40px; }
 
 section h2 {
     color: #4B0082;
@@ -80,6 +78,7 @@ section h2 {
     display: inline-block;
 }
 
+/* === Фільтри === */
 #filters form {
     background-color: #ffffff;
     padding: 20px;
@@ -100,6 +99,10 @@ section h2 {
     background-color: #ffffff;
     color: #333333;
     transition: all 0.2s ease;
+}
+
+#filters input[type="number"] {
+    width: 150px;
 }
 
 #filters input:focus,
@@ -134,6 +137,7 @@ section h2 {
     color: #111111;
 }
 
+/* === Сітка карток ігор === */
 #games-list {
     display: grid;
     grid-template-columns: 1fr; 
@@ -177,6 +181,14 @@ article h3 {
     font-size: 1.3rem;
 }
 
+.genre-link {
+    font-style: italic;
+    margin: 0 0 10px 0;
+    cursor: pointer;
+    color: #00d2d3;
+    text-decoration: underline;
+}
+
 .player-badge {
     background-color: #feca57;
     color: #333333; 
@@ -188,6 +200,66 @@ article h3 {
     display: inline-block;
 }
 
+/* Кнопка статусу гри */
+.status-btn {
+    margin-top: auto;
+    padding: 8px 15px;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.status-btn.owned { background-color: #27ae60; }
+.status-btn.not-owned { background-color: #e74c3c; }
+
+/* === Детальна сторінка гри === */
+.game-detail-card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: fadeInScale 0.4s ease-out;
+}
+
+.game-detail-img {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.game-detail-info {
+    text-align: left;
+    margin: 20px auto;
+    max-width: 300px;
+    font-size: 1.1rem;
+}
+
+/* === Сторінки помилок / Сповіщення === */
+.error-page {
+    text-align: center;
+    padding: 50px;
+    grid-column: 1 / -1;
+}
+
+.error-box {
+    grid-column: 1 / -1;
+    background-color: #ffeaa7;
+    color: #d63031;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* === Анімації === */
 @keyframes fadeInScale {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
@@ -220,6 +292,7 @@ article h3 {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+/* === Медіа-запити (Адаптивність) === */
 @media (min-width: 600px) {
     header {
         flex-direction: row;
@@ -230,11 +303,6 @@ article h3 {
         flex-direction: row; 
         flex-wrap: wrap;
         align-items: center;
-    }
-    
-    #filters label {
-        font-weight: 600;
-        margin-right: -5px; 
     }
 
     #games-list {
